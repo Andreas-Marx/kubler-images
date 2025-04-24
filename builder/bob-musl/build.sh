@@ -33,8 +33,9 @@ configure_bob() {
     #install_git_postsync_hooks
     [[ "${BOB_UPDATE_WORLD}" == true ]] && emerge -vuND world
     add_overlay musl
-    add_overlay kubler https://github.com/edannenberg/kubler-overlay.git
     find /var/db/repos/musl -name '*.ebuild' | xargs egrep -l EAPI=[123456] | xargs rm
+    add_overlay kubler https://github.com/Andreas-Marx/kubler-overlay.git
+    git -C /var/db/repos/kubler pull origin 2025-04-17_kernel-6.8.patch
     emerge app-portage/eix
     eix-update
     emerge dev-lang/go
