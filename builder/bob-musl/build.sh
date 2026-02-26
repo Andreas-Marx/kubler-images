@@ -17,8 +17,7 @@ configure_bob() {
     eselect news read new 1> /dev/null
     # use hot fix in 0.99.4
     echo '=app-portage/flaggie-0.99.4 ~amd64' >> /etc/portage/package.accept_keywords/flaggie
-    emerge app-portage/flaggie app-portage/eix app-portage/gentoolkit
-    eix-update
+    emerge app-portage/flaggie app-portage/gentoolkit
     touch /etc/portage/package.accept_keywords/flaggie
     echo 'LANG="en_US.utf8"' > /etc/env.d/02locale
     env-update
@@ -33,6 +32,11 @@ configure_bob() {
     emerge dev-vcs/git app-eselect/eselect-repository app-misc/jq app-shells/bash-completion
     #install_git_postsync_hooks
     [[ "${BOB_UPDATE_WORLD}" == true ]] && emerge -vuND world
-    add_overlay kubler https://github.com/edannenberg/kubler-overlay.git
+    add_overlay musl
+    find /var/db/repos/musl -name '*.ebuild' | xargs egrep -l EAPI=[123456] | xargs rm
+    add_overlay kubler https://github.com/Andreas-Marx/kubler-overlay.git
+    git -C /var/db/repos/kubler pull origin 2025-04-17_kernel-6.8.patch
+    emerge app-portage/eix
+    eix-update
     emerge dev-lang/go
 }
